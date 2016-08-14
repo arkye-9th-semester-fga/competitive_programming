@@ -3,10 +3,10 @@
 # Inputs
 CODE = code.c
 STANDARD_INPUT = 01.input
+STANDARD_ANSWER = 01.answer
 
 # Outputs
 APPLICATION = code
-STANDARD_ANSWER = 01.answer
 STANDARD_OUTPUT = 01.output
 STANDARD_RESULT = 01.result
 
@@ -17,7 +17,7 @@ COMPILE = gcc $(URI_FLAGS) $(CODE) -o $(APPLICATION)
 
 # Execution Settings
 ## Input -> Application -> Output
-EXECUTE = $(APPLICATION) < $(STANDARD_INPUT) > $(STANDARD_OUTPUT)
+EXECUTE = ./$(APPLICATION) < $(STANDARD_INPUT) > $(STANDARD_OUTPUT)
 ## Output -> Correct Answer -> Diff Result
 TEST_OUTPUT = diff $(STANDARD_ANSWER) $(STANDARD_OUTPUT) > $(STANDARD_RESULT)
 
@@ -32,4 +32,4 @@ $(STANDARD_RESULT): $(CODE) $(STANDARD_INPUT) $(STANDARD_ANSWER)
 	$(TEST_OUTPUT)
 
 clean:
-	rm -f *.result
+	rm -f *.result *.output code

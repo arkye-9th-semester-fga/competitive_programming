@@ -36,8 +36,9 @@
 *.su
 
 # REPOSITORY SETTINGS
-# Code File
+# Code Files
 code.c
+code
 # I/O
 *.input
 *.output
