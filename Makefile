@@ -1,35 +1,50 @@
 ## Simple C I/O/Diff Structure Makefile ##
 
-# Inputs
-CODE = code.c
-STANDARD_INPUT = 01.input
-STANDARD_ANSWER = 01.answer
+include gmsl
 
-# Outputs
+# Source Code
+CODE = code.c
 APPLICATION = code
-STANDARD_OUTPUT = 01.output
-STANDARD_RESULT = 01.result
+
+# Test Directory
+TEST_DIR = test/
+TEST_DIRS = $(wildcard $(TEST_DIR)*)
 
 # Compilation Settings
 ## URI gcc version: 4.8.2
 URI_FLAGS = -O2 -lm
 COMPILE = gcc $(URI_FLAGS) $(CODE) -o $(APPLICATION)
 
-# Execution Settings
-## Input -> Application -> Output
-EXECUTE = ./$(APPLICATION) < $(STANDARD_INPUT) > $(STANDARD_OUTPUT)
-## Output -> Correct Answer -> Diff Result
-TEST_OUTPUT = diff $(STANDARD_ANSWER) $(STANDARD_OUTPUT) > $(STANDARD_RESULT)
+# Makefile
+INPUT = test.input
+ANSWER = test.answer
+OUTPUT = test.output
+
+ECHO_INPUT = echo "\nINPUT:"; cat $(dir)/$(INPUT)
+ECHO_ANSWER = echo "\nCORRECT ANSWER:"; cat $(dir)/$(ANSWER)
+ECHO_OUTPUT = echo "\nOUTPUT:"; cat $(OUTPUT)
+
+RUN_TEST = ./$(APPLICATION) < $(dir)/test.input > $(OUTPUT)
+
+CHECK_RESULT = sh check_result.sh $(dir)/test.answer $(OUTPUT)
+
+EXECUTE = echo $(dir); $(ECHO_INPUT); $(RUN_TEST); $(ECHO_OUTPUT); $(ECHO_ANSWER); $(CHECK_RESULT);
 
 .PHONY: all
 
 all:
-	make -s $(STANDARD_RESULT)
+	make --always-make --no-print-directory main
 
-$(STANDARD_RESULT): $(CODE) $(STANDARD_INPUT) $(STANDARD_ANSWER)
+main: $(CODE)
+	@clear
+	@echo "\nCompiling:"
 	$(COMPILE)
-	$(EXECUTE)
-	$(TEST_OUTPUT)
+	@$(COMPILE_CHECKER)
+	@echo "\nExecuting:"
+	@echo "==========================="
+	@$(foreach dir, $(TEST_DIRS), $(EXECUTE))
+	@rm -f *.output
 
 clean:
-	rm -f *.result *.output code
+	@echo "\nCLEANING CONTENT"
+	rm -f code *.output
