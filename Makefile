@@ -24,27 +24,27 @@ ECHO_INPUT = echo "\nINPUT:"; cat $(dir)/$(INPUT)
 ECHO_ANSWER = echo "\nCORRECT ANSWER:"; cat $(dir)/$(ANSWER)
 ECHO_OUTPUT = echo "\nOUTPUT:"; cat $(OUTPUT)
 
-RUN_TEST = ./$(APPLICATION) < $(dir)/test.input > $(OUTPUT)
+RUN_TEST = time -p --output=timer ./$(APPLICATION) < $(dir)/test.input > $(OUTPUT)
 
 CHECK_RESULT = sh check_result.sh $(dir)/test.answer $(OUTPUT)
 
-EXECUTE = echo $(dir); $(ECHO_INPUT); $(RUN_TEST); $(ECHO_OUTPUT); $(ECHO_ANSWER); $(CHECK_RESULT);
+PRINT_TIMER = echo "\nTIME:";cat timer
+
+EXECUTE = echo "\nTEST:" $(dir); $(ECHO_INPUT); $(RUN_TEST); $(ECHO_OUTPUT); $(ECHO_ANSWER); $(PRINT_TIMER); $(CHECK_RESULT);
 
 .PHONY: all
 
 all:
-	make --always-make --no-print-directory main
+	@make --always-make --no-print-directory main
 
-main: $(CODE)
-	@clear
+main:
 	@echo "\nCompiling:"
 	$(COMPILE)
-	@$(COMPILE_CHECKER)
 	@echo "\nExecuting:"
 	@echo "==========================="
 	@$(foreach dir, $(TEST_DIRS), $(EXECUTE))
-	@rm -f *.output
+	@make --no-print-directory clean
 
 clean:
 	@echo "\nCLEANING CONTENT"
-	rm -f code *.output
+	@rm -f code timer *.output
