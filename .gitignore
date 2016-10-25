@@ -38,6 +38,7 @@
 # REPOSITORY SETTINGS
 # Code Files
 code.c
+code.cpp
 code
 # I/O
 *.input
